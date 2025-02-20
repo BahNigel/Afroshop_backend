@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Payment Growth Chart -->
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-4" style="background-color: #f1f8ff;">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Payment Growth Over Time</h5>
+                    <canvas id="payment-growth-chart" style="height: 500px; width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Sections (Categories, Products, Checkouts, Payments) -->
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="text-primary">Categories</h3>
+            <ul class="list-group">
+                {% for category in categories %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ category.name }}</span>
+                        <span class="badge badge-secondary">{{ category.products.count }} products</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h3 class="text-info">Products</h3>
+            <ul class="list-group">
+                {% for product in products %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ product.name }}</span>
+                        <span class="text-muted">${{ product.price }} - {{ product.quantity_in_stock }} in stock</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Payment Growth Chart (Line Chart)
+  const paymentGrowthLabels = {{ payment_growth_data.labels|safe }};
+  const paymentGrowthValues = {{ payment_growth_data.values|safe }};
+
+  console.log('Labels:', paymentGrowthLabels);  // Debugging
+  console.log('Values:', paymentGrowthValues); // Debugging
+
+  new Chart(document.getElementById('payment-growth-chart'), {
+      type: 'line',
+      data: {
+          labels: paymentGrowthLabels,
+          datasets: [{
+              label: 'Payment Growth Over Time',
+              data: paymentGrowthValues,
+              borderColor: '#007bff',  // Blue color for the line
+              backgroundColor: 'rgba(0, 123, 255, 0.2)',  // Light blue for background
+              fill: true,  // Fill under the line
+              borderWidth: 2,
+              pointBackgroundColor: '#007bff',  // Blue color for points
+              pointRadius: 5,  // Bigger points to highlight data
+              tension: 0.1  // Smoother line
+          }]
+      },
+      options: {
+          responsive: true,
+          scales: {
+              y: {
+                  beginAtZero: false,
+                  ticks: {
+                      callback: function(value) { return '$' + value; }
+                  }
+              }
+          },
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return '$' + tooltipItem.raw.toFixed(2);  // Format tooltips
+                      }
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if product %}Edit{% else %}Create{% endif %} Product</h2>
+
+    <!-- Display form errors -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>There were some errors with your submission:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Product Form Fields -->
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+
+        <!-- Related Product Images Section -->
+        <div class="form-group mt-3">
+            <label for="related_images">Add Related Product Images:</label>
+            <input type="file" name="related_images" multiple class="form-control">
+        </div>
+
+        <h4>Related Product Images</h4>
+        <div class="form-group">
+            {% if related_images %}
+                <div class="related-images">
+                    {% for image in related_images %}
+                        <div class="related-image">
+                            <img src="{{ image.image.url }}" alt="Related Image" width="150" class="img-thumbnail">
+                            <label>
+                                <input type="checkbox" name="delete_images" value="{{ image.id }}">
+                                Delete
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No related images uploaded yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">
+                {% if product %}Update{% else %}Create{% endif %} Product
+            </button>
+            <a href="{% url 'product_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+        </div>
+    </form>
+
+    {% if product and product.image %}
+        <hr>
+        <h4>Current Product Image</h4>
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail" width="150">
+    {% endif %}
+</div>
+{% endblock %}
+
+<!-- CSS Styling for Related Images -->
+<style>
+    .related-images {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .related-image {
+        text-align: center;
+    }
+
+    .related-image img {
+        max-width: 100%;
+        max-height: 150px;
+    }
+</style>

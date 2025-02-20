@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>About Us</h2>
+
+    <div class="about-us-content">
+        <h3>{{ about_us.company_name }}</h3>
+        <h4> In English </h4>
+        <p>{{ about_us.description }}</p>
+        <h4> In German</h4>
+        <p>{{ about_us.description_de }}</p>
+        <p><strong>Location:</strong> {{ about_us.location }}</p>
+        <p><strong>Email:</strong> {{ about_us.email }}</p>
+        <p><strong>Phone:</strong> {{ about_us.phone }}</p>
+        {% if about_us.website %}
+            <p><strong>Website:</strong> <a href="{{ about_us.website }}" target="_blank">{{ about_us.website }}</a></p>
+        {% endif %}
+        {% if about_us.latitude and about_us.longitude %}
+            <p><strong>Location Coordinates:</strong> Latitude: {{ about_us.latitude }}, Longitude: {{ about_us.longitude }}</p>
+        {% endif %}
+        
+        {% if about_us.image %}
+            <h4>About Us Image</h4>
+            <img src="{{ about_us.image.url }}" alt="{{ about_us.company_name }}" class="img-thumbnail" width="300">
+        {% endif %}
+
+        <a href="{% url 'edit_about_us' %}" class="btn btn-primary mt-3">Edit About Us</a>
+    </div>
+</div>
+{% endblock %}

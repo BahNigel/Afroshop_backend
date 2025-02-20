@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Payment List</h2>
+    
+    <!-- Search Form -->
+    <form method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="order_id" class="form-control" placeholder="Search by Order ID" value="{{ order_id_search }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+
+    {% if payments %}
+        <div class="table-responsive">
+            <table class="table table-bordered" id="payment-table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>User Email</th>
+                        <th>Order ID</th>
+                        <th>Items</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                    </tr>
+                </thead>
+                <tbody id="payment-list">
+                    {% for payment in payments %}
+                        <tr class="payment-row">
+                            <td>{{ payment.user.first_name }} {{ payment.user.last_name }}</td>
+                            <td>{{ payment.user.email }}</td>
+                            <td>{{ payment.orderId }}</td>
+                            <td>
+                                <div class="accordion" id="accordionPayment{{ payment.id }}">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading{{ payment.id }}">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ payment.id }}" aria-expanded="false" aria-controls="collapse{{ payment.id }}">
+                                                View {{ payment.item_count }} Items
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{ payment.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ payment.id }}" data-bs-parent="#accordionPayment{{ payment.id }}">
+                                            <div class="accordion-body">
+                                                <div class="d-flex flex-column gap-3">
+                                                    {% for item in payment.items %}
+                                                        <div class="card shadow-sm">
+                                                            <img src="{{ item.product_image }}" class="card-img-top" alt="{{ item.product_name }}" style="height: 200px; width: 200px; object-fit: cover; border-radius: 0;">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{ item.product_name }}</h5>
+                                                                <p class="card-text"><strong>Quantity:</strong> {{ item.quantity }}</p>
+                                                                <p class="card-text"><strong>Price:</strong> ${{ item.price }}</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ payment.total_price }}</td>
+                            <td>
+                                {% if payment.status == "payed" %}
+                                    <span class="text-success fw-bold">{{ payment.get_status_display }}</span>
+                                {% else %}
+                                    <span class="text-danger fw-bold">{{ payment.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ payment.created_at }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No payments found.</p>
+    {% endif %}
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-center">
+    <nav aria-label="Page navigation">
+        <ul class="pagination" id="pagination"></ul>
+    </nav>
+</div>
+
+<script>
+// Pagination Settings
+const rowsPerPage = 5; // Define how many rows you want to display per page
+let currentPage = 1;
+let payments = [...document.querySelectorAll('#payment-list .payment-row')]; // Collect all payment rows
+
+// Function to display payments on the current page
+function displayPayments() {
+    const totalPayments = payments.length;
+    const totalPages = Math.ceil(totalPayments / rowsPerPage);
+
+    // Hide all rows
+    payments.forEach(row => row.style.display = 'none');
+
+    // Calculate the range of rows to display
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    // Display the current page's rows
+    for (let i = startIndex; i < endIndex && i < totalPayments; i++) {
+        payments[i].style.display = '';
+    }
+
+    // Update pagination links
+    updatePaginationLinks(totalPages);
+}
+
+// Function to update pagination links
+function updatePaginationLinks(totalPages) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = ''; // Clear current pagination links
+
+    // Create "Previous" button
+    if (currentPage > 1) {
+        const prevButton = document.createElement('li');
+        prevButton.classList.add('page-item');
+        prevButton.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>`;
+        pagination.appendChild(prevButton);
+    }
+
+    // Page number display
+    const pageDisplay = document.createElement('li');
+    pageDisplay.classList.add('page-item', 'disabled');
+    pageDisplay.innerHTML = `<span class="page-link">Page ${currentPage} of ${totalPages}</span>`;
+    pagination.appendChild(pageDisplay);
+
+    // Create "Next" button
+    if (currentPage < totalPages) {
+        const nextButton = document.createElement('li');
+        nextButton.classList.add('page-item');
+        nextButton.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>`;
+        pagination.appendChild(nextButton);
+    }
+}
+
+// Function to change the current page
+function changePage(page) {
+    currentPage = page;
+    displayPayments();
+}
+
+// Initialize pagination
+document.addEventListener('DOMContentLoaded', function() {
+    displayPayments();
+});
+</script>
+
+{% endblock %}

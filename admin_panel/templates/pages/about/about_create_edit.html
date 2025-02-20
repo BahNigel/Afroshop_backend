@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if about_us %}Edit{% else %}Create{% endif %} About Us</h2>
+
+    <!-- Display form errors -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>There were some errors with your submission:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.company_name.id_for_label }}">Company Name</label>
+            {{ form.company_name }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description_de.id_for_label }}">Description In German</label>
+            {{ form.description_de }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.location.id_for_label }}">Location</label>
+            {{ form.location }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.latitude.id_for_label }}">Latitude</label>
+            {{ form.latitude }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.longitude.id_for_label }}">Longitude</label>
+            {{ form.longitude }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone</label>
+            {{ form.phone }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.website.id_for_label }}">Website</label>
+            {{ form.website }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">Image</label>
+            {{ form.image }}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg">
+                {% if about_us %}Update{% else %}Create{% endif %} About Us
+            </button>
+            <a href="{% url 'about_us' %}" class="btn btn-secondary btn-lg">Cancel</a>
+        </div>
+    </form>
+
+    {% if about_us %}
+        <hr>
+        <h4>Current About Us Image</h4>
+        <img src="{{ about_us.image.url }}" alt="{{ about_us.company_name }}" class="img-thumbnail" width="150">
+    {% endif %}
+</div>
+{% endblock %}

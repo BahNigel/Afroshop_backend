@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Contact Messages</h2>
+
+    <!-- Search Form -->
+    <form method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search by Name or Email" value="{{ search_query }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+
+    {% if contact_messages %}
+        <div class="table-responsive">
+            <table class="table table-bordered" id="contact-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Date Sent</th>
+                    </tr>
+                </thead>
+                <tbody id="contact-list">
+                    {% for message in contact_messages %}
+                        <tr class="contact-row">
+                            <td>{{ message.name }}</td>
+                            <td>{{ message.email }}</td>
+                            <td>{{ message.subject }}</td>
+                            <td>
+                                <button class="btn btn-link text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ message.id }}" aria-expanded="false" aria-controls="collapse{{ message.id }}">
+                                    View Message
+                                </button>
+                                <div class="collapse" id="collapse{{ message.id }}">
+                                    <div class="card card-body">
+                                        {{ message.message }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ message.created_at }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No contact messages found.</p>
+    {% endif %}
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-center">
+    <nav aria-label="Page navigation">
+        <ul class="pagination" id="pagination"></ul>
+    </nav>
+</div>
+
+<script>
+// Pagination Settings
+const rowsPerPage = 5; // Define how many rows you want to display per page
+let currentPage = 1;
+let messages = [...document.querySelectorAll('#contact-list .contact-row')]; // Collect all message rows
+
+// Function to display messages on the current page
+function displayMessages() {
+    const totalMessages = messages.length;
+    const totalPages = Math.ceil(totalMessages / rowsPerPage);
+
+    // Hide all rows
+    messages.forEach(row => row.style.display = 'none');
+
+    // Calculate the range of rows to display
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    // Display the current page's rows
+    for (let i = startIndex; i < endIndex && i < totalMessages; i++) {
+        messages[i].style.display = '';
+    }
+
+    // Update pagination links
+    updatePaginationLinks(totalPages);
+}
+
+// Function to update pagination links
+function updatePaginationLinks(totalPages) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = ''; // Clear current pagination links
+
+    // Create "Previous" button
+    if (currentPage > 1) {
+        const prevButton = document.createElement('li');
+        prevButton.classList.add('page-item');
+        prevButton.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>`;
+        pagination.appendChild(prevButton);
+    }
+
+    // Page number display
+    const pageDisplay = document.createElement('li');
+    pageDisplay.classList.add('page-item', 'disabled');
+    pageDisplay.innerHTML = `<span class="page-link">Page ${currentPage} of ${totalPages}</span>`;
+    pagination.appendChild(pageDisplay);
+
+    // Create "Next" button
+    if (currentPage < totalPages) {
+        const nextButton = document.createElement('li');
+        nextButton.classList.add('page-item');
+        nextButton.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>`;
+        pagination.appendChild(nextButton);
+    }
+}
+
+// Function to change the current page
+function changePage(page) {
+    currentPage = page;
+    displayMessages();
+}
+
+// Initialize pagination
+document.addEventListener('DOMContentLoaded', function() {
+    displayMessages();
+});
+</script>
+
+{% endblock %}
