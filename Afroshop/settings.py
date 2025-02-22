@@ -119,33 +119,29 @@ USE_TZ = True
 # Static & Media Files
 AWS_S3 = os.getenv('AWS_S3', 'True') == 'True'
 
-if AWS_S3:
-    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_REGION_NAME = "eu-north-1"
+# AWS S3 Configurations
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")  # Set in your environment variables
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")  # Set in your environment variables
+AWS_STORAGE_BUCKET_NAME = "afroshop"  # Replace with your bucket name
+AWS_S3_REGION_NAME = "us-east-1"  # Change based on your AWS region
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = None
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-    AWS_S3_SIGNATURE_VERSION = "s3v4"
+# Static & Media Files
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
 
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+AWS_DEFAULT_ACL = None  # Ensures full public access if needed
+AWS_QUERYSTRING_AUTH = False  # Removes authentication query params from URLs
 
-    # Media files will be stored in the S3 bucket
-    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    
-    DEFAULT_FILE_STORAGE = 'Afroshop.storage_backends.MediaStorage'
-    STATICFILES_STORAGE = 'Afroshop.storage_backends.StaticStorage'
+# Static files (CSS, JavaScript, etc.)
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-else:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Media files (Uploaded files)
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
