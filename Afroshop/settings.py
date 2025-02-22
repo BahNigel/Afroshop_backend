@@ -140,9 +140,9 @@ STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
 
-
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # Default Auto Field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ssh -i "afroshop.pem" ubuntu@ec2-51-20-107-27.eu-north-1.compute.amazonaws.com
