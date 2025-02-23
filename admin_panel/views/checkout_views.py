@@ -2,7 +2,9 @@
 
 from django.shortcuts import render
 from products.models import Checkout, Product
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def checkout_list(request):
     # Get all checkouts for all users (no filter by user)
     checkouts = Checkout.objects.all().order_by('-created_at')

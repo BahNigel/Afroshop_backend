@@ -53,6 +53,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Afroshop.urls'
 CORS_ALLOW_ALL_ORIGINS = True
+LOGIN_URL = '/admin/login/'
 
 TEMPLATES = [
     {

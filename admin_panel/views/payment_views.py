@@ -3,7 +3,9 @@
 from django.shortcuts import render
 from django.db.models import Q
 from products.models import Payment, Product
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def payment_list(request):
     order_id_search = request.GET.get('order_id', '')  # Get the search parameter from the URL
     payments = Payment.objects.all().order_by('-created_at')  # Fetch all payments

@@ -7,11 +7,13 @@ from django.contrib.auth.decorators import login_required
 
 
 # Category List View
+@login_required
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'pages/categories/category_list.html', {'categories': categories})
 
 # Create category view
+@login_required
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES)
@@ -24,6 +26,7 @@ def category_create(request):
     return render(request, 'pages/categories/category_create_edit.html', {'form': form})
 
 # Edit category view
+@login_required
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk)
     
@@ -39,6 +42,7 @@ def category_edit(request, pk):
 
 
 # Category Delete View
+@login_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()

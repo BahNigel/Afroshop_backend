@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from user.models import User
 
 # List of all users
+@login_required
 def user_list(request):
     # Fetch all users from the User model
     users = User.objects.all()

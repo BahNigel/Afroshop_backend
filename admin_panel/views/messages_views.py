@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.db.models import Q
 from products.models import ContactUs
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def contact_messages_list(request):
     search_query = request.GET.get('search', '')  # Get the search query from the URL
     contact_messages = ContactUs.objects.all().order_by('-created_at')  # Fetch all messages

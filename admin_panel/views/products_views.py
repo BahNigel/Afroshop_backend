@@ -3,9 +3,10 @@ from django.contrib import messages
 from django.db.models import Avg, Case, When, FloatField
 from products.forms import ProductForm
 from products.models import Product, ProductRating, RelatedProductImages
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required
 def product_list(request):
     products = Product.objects.annotate(
         avg_rating=Avg('ratings__rating'),
@@ -29,7 +30,7 @@ def product_list(request):
     })
 
 
-
+@login_required
 def product_create_or_edit(request, pk=None):
     if pk:
         product = get_object_or_404(Product, pk=pk)
@@ -90,7 +91,7 @@ def product_create_or_edit(request, pk=None):
         'related_images': related_images,
     })
 
-
+@login_required
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
