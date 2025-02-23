@@ -2,6 +2,10 @@ from django.db import models
 
 from user.models import User
 
+import os
+from django.db import models
+from django.core.files.storage import default_storage
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -12,10 +16,18 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self, *args, **kwargs):
+        # Delete the image file before deleting the instance
+        if self.image:
+            if default_storage.exists(self.image.name):
+                default_storage.delete(self.image.name)
+        super().delete(*args, **kwargs)
+
     class Meta:
         ordering = ['name']
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+
 
 
 class Product(models.Model):
@@ -39,6 +51,13 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def delete(self, *args, **kwargs):
+        # Delete the image file before deleting the instance
+        if self.image:
+            if default_storage.exists(self.image.name):
+                default_storage.delete(self.image.name)
+        super().delete(*args, **kwargs)
 
     class Meta:
         ordering = ['-created_at']
@@ -217,6 +236,13 @@ class AboutUs(models.Model):
 
     def __str__(self):
         return self.company_name
+    
+    def delete(self, *args, **kwargs):
+        # Delete the image file before deleting the instance
+        if self.image:
+            if default_storage.exists(self.image.name):
+                default_storage.delete(self.image.name)
+        super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = "About Us"
@@ -231,6 +257,13 @@ class RelatedProductImages(models.Model):
 
     def __str__(self):
         return f"Related image for {self.product.name}"
+    
+    def delete(self, *args, **kwargs):
+        # Delete the image file before deleting the instance
+        if self.image:
+            if default_storage.exists(self.image.name):
+                default_storage.delete(self.image.name)
+        super().delete(*args, **kwargs)
 
     class Meta:
         ordering = ['-created_at']
