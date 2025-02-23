@@ -5,12 +5,136 @@
       <a class="navbar-brand brand-logo" href="{% url 'index' %}">
         One-Stop Afroshop
       </a>
-      <a class="navbar-brand brand-logo-mini" href="{% url 'index' %}">
-        <img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" />
-      </a>
+      <!-- Sidebar Menu -->
+      <div id="sidebarMenu" class="sidebar-menu">
+        <button class="close-btn" onclick="closeMenu()">&times;</button>
+        <ul class="nav">
+          <!-- Dashboard -->
+          <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+            <a class="nav-link" href="/">
+              <i class="fas fa-home menu-icon"></i> <!-- Font Awesome Home icon -->
+              <span class="menu-title">Dashboard</span>
+              <div class="badge badge-danger">new</div>
+            </a>
+          </li>
+      
+          <!-- User List -->
+          <li class="nav-item {% if request.path == '/users/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'user_list' %}">
+              <i class="fas fa-users menu-icon"></i> <!-- Font Awesome Users icon -->
+              <span class="menu-title">User List</span>
+            </a>
+          </li>
+      
+          <!-- Product List -->
+          <li class="nav-item {% if request.path == '/list/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'product_list' %}">
+              <i class="fas fa-cogs menu-icon"></i> <!-- Font Awesome Gear icon -->
+              <span class="menu-title">Product List</span>
+            </a>
+          </li>
+      
+          <!-- Category List -->
+          <li class="nav-item {% if request.path == '/categories/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'category_list' %}">
+              <i class="fas fa-folder-open menu-icon"></i> <!-- Font Awesome Folder icon -->
+              <span class="menu-title">Category List</span>
+            </a>
+          </li>
+      
+          <!-- Payment List -->
+          <li class="nav-item {% if request.path == '/payments/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'payment_list' %}">
+              <i class="fas fa-credit-card menu-icon"></i> <!-- Font Awesome Credit Card icon -->
+              <span class="menu-title">Payment List</span>
+            </a>
+          </li>
+      
+          <!-- Checkout List -->
+          <li class="nav-item {% if request.path == '/checkouts/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'checkout_list' %}">
+              <i class="fas fa-shopping-cart menu-icon"></i> <!-- Font Awesome Shopping Cart icon -->
+              <span class="menu-title">Checkout List</span>
+            </a>
+          </li>
+      
+          <!-- Contact Us Messages -->
+          <li class="nav-item {% if request.path == '/contact_us_messages/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'contact_us_messages' %}">
+              <i class="fas fa-envelope menu-icon"></i> <!-- Font Awesome Envelope icon -->
+              <span class="menu-title">Contact Us Messages</span>
+            </a>
+          </li>
+      
+          <!-- About Us -->
+          <li class="nav-item {% if request.path == '/about_us/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'about_us' %}">
+              <i class="fas fa-info-circle menu-icon"></i> <!-- Font Awesome Info Circle icon -->
+              <span class="menu-title">About Us</span>
+            </a>
+          </li>
+      
+        </ul>
+      </div>
+
+      <!-- Menu Button -->
+      <button class="navbar-brand brand-logo-mini navbar-toggler navbar-toggler" type="button" onclick="openMenu()">
+        <span class="typcn typcn-th-menu"></span>
+      </button>
       <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
         <span class="typcn typcn-th-menu"></span>
       </button>
     </div>
   </div>
 </nav>
+
+
+
+<!-- CSS -->
+<style>
+  .sidebar-menu {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Initially hidden */
+    width: 250px;
+    height: 100%;
+    background-color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: 0.3s ease-in-out;
+    padding-top: 60px;
+    z-index: 1000;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: black;
+    transition: 0.3s;
+  }
+
+  .sidebar-menu a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+</style>
+
+<!-- JavaScript -->
+<script>
+  function openMenu() {
+    document.getElementById("sidebarMenu").style.left = "0";
+  }
+
+  function closeMenu() {
+    document.getElementById("sidebarMenu").style.left = "-250px";
+  }
+</script>
